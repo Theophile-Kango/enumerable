@@ -24,8 +24,23 @@ module Enumerable
       self
     end
   end
+
+  def my_select
+    unless block_given?
+      to_enum(__method__)
+    else
+      i = 0
+      while i < self.size
+        if yield
+          yield self[i]
+        end
+      end
+    end
+  end
+  
 end
 
+p [1,2,3,4,5].select { |num|  num.even?  }   #=> [2, 4]
 
 array = ["Theo","Gloria","Veronica"]
 
