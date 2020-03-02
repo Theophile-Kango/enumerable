@@ -42,7 +42,7 @@ module Enumerable
     end
   end
 
-  def my_all(word=nil)
+  def my_all?(word=nil)
    
     unless block_given?
       
@@ -84,7 +84,7 @@ module Enumerable
             false
           end
       else
-        to_enum(__method__)
+        false
       end
     else
       i = 0
@@ -102,25 +102,108 @@ module Enumerable
 
     end
   end
+
+  def my_any?(word=nil)
+   
+    unless block_given?
+      
+      if self.size == 0
+        false
+      elsif word.class == Regexp
+          i = 0
+          j = 0
+          while i < self.size
+              self[i]
+              i += 1
+          end
+          for element in self
+            if element.match(word)
+              j += 1
+            end
+          end
+          if j > 0 and j <= self.length
+            true
+          else
+            false
+          end
+        elsif word != nil
+          i = 0
+          j = 0
+          while i < self.size
+              self[i]
+              i += 1
+          end
+          for element in self
+            if element.class <= word
+              j += 1
+            end
+          end
+          
+          if j > 0 and j <= self.length
+            true
+          else
+            false
+          end
+      else
+        true
+      end
+    else
+      i = 0
+      j = 0
+      while i < self.size
+          yield self[i]
+          i += 1
+      end
+      
+      for element in self
+        if yield element
+          j += 1
+        end
+      end
+      if j > 0 and j <= self.size
+       true
+      else
+        false
+      end
+    end
+  end
+
 end
 
+#1) my_select
 
-p [1,2,3,4,5].my_select { |num|  num.even?  }   #=> [2, 4]
+# p [1,2,3,4,5].my_select { |num|  num.even?  }   #=> [2, 4]
 
-array = ["Theo","Gloria","Veronica"]
+# array = ["Theo","Gloria","Veronica"]
 
-print array.my_each
+#2) my_each
 
-hash = Hash.new
-%w(cat dog wombat).my_each_with_index { |item, index|
-  hash[item] = index
-}
+# p array.my_each
+
+#3) my_each_with_index
+
+# hash = Hash.new
+# %w(cat dog wombat).my_each_with_index { |item, index|
+#   hash[item] = index
+# }
 #p hash   #=> {"cat"=>0, "dog"=>1, "wombat"=>2}
 #p array.my_each_with_index
 #p array.each_with_index
 
-p %w[ant bear cat].my_all { |word| word.length >= 3 } #=> true
-p %w[ant bear cat].my_all { |word| word.length >= 4 } #=> false
-p [].my_all #=> true
-p %w[ant bear cat].my_all(/t/)                        #=> false
-p [1, 2i, 3.14].my_all(Numeric)                       #=> true
+#4) my_all?
+
+# p %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
+# p %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
+# p [].my_all? #=> true
+# p %w[ant bear cat].my_all?(/t/)                        #=> false
+#p [1, 2i, 3.14].my_all?(Numeric)                       #=> true
+# p [nil, true, 99].my_all?                              #=> false
+
+#5) my_any?
+
+p %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
+p %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
+p %w[ant bear cat].my_any?(/d/)                        #=> false
+p [nil, true, 99].my_any?(Integer)                     #=> true
+p [nil, true, 99].my_any?                              #=> true
+p [].my_any?                                           #=> false
