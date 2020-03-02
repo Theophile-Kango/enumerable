@@ -168,6 +168,66 @@ module Enumerable
     end
   end
 
+  def my_none?(word = nil)
+    unless block_given?
+      
+      if self.size == 0
+        true
+      elsif word.class == Regexp
+          i = 0
+          j = 0
+          while i < self.size
+              self[i]
+              i += 1
+          end
+          for element in self
+            if element.match(word)
+              j += 1
+            end
+          end
+          j == 0 ? true : false
+            
+        elsif word != nil
+          i = 0
+          j = 0
+          while i < self.size
+              self[i]
+              i += 1
+          end
+          for element in self
+            if element.class <= word
+              j += 1
+            end
+          end
+          
+          j != 0 ? false : true
+        
+      else
+        j = 0
+        self.my_each do |e|
+          if e == true
+            j += 1
+          end
+        end
+        j == 0 ? true : false
+      end
+    else
+      i = 0
+      while i < self.size
+          yield self[i]
+          i += 1
+      end
+      j = 0
+      self.my_each do |element|
+        if yield element
+          j += 1
+        end
+      end
+      j == 0 ? true : false
+        
+    end
+    
+  end
 end
 
 #1) my_select
@@ -201,9 +261,20 @@ end
 
 #5) my_any?
 
-p %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
-p %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
-p %w[ant bear cat].my_any?(/d/)                        #=> false
-p [nil, true, 99].my_any?(Integer)                     #=> true
-p [nil, true, 99].my_any?                              #=> true
-p [].my_any?                                           #=> false
+# p %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
+# p %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
+# p %w[ant bear cat].my_any?(/d/)                        #=> false
+# p [nil, true, 99].my_any?(Integer)                     #=> true
+# p [nil, true, 99].my_any?                              #=> true
+# p [].my_any?                                           #=> false
+
+#my_none?
+
+p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
+p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
+p %w{ant bear cat}.my_none?(/d/)                        #=> true
+p [1, 3.14, 42].my_none?(Float)                         #=> false
+p [].my_none?                                           #=> true
+p [nil].my_none?                                        #=> true
+p [nil, false].my_none?                                 #=> true
+p [nil, false, true].my_none?                           #=> false
