@@ -271,6 +271,50 @@ module Enumerable
       arr
     end
   end
+
+  def my_inject(acc = nil)
+    arr = []
+    arr2 = []
+
+    for element in self do
+      if element.class == String
+        result = yield(element,element)
+      else
+        result = yield(element, element.next)
+      end
+      arr.push(result)
+    end
+    
+    i = 0
+    j = 0
+    while i < arr.length do
+      if arr[i].class == String
+        arr2.push(arr[i])
+      else
+      if i.even?
+        arr2.push(arr[i])
+      end
+    end
+      i += 1
+    end
+  
+    result = yield(arr2[0], arr2[1])
+    
+    arr2.my_each do |e|
+      if e.class  == String
+        result = yield(result, e)
+      end
+        
+      if j > 1
+        result = yield(result, e)
+      end
+      j += 1
+    end
+    if acc.class <= Numeric
+      result = result * acc
+    end
+    result
+  end
 end
 
 #1) my_select
@@ -329,6 +373,17 @@ end
 # p ary.my_count{ |x| x%2==0 } #=> 3
 
 #8) my_map
-p (1..4).my_map
-p (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
-p (1..4).my_map { "cat"  }   #=> ["cat", "cat", "cat", "cat"]
+# p (1..4).my_map
+# p (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
+# p (1..4).my_map { "cat"  }   #=> ["cat", "cat", "cat", "cat"]
+
+#9) my_inject
+#p (5..10).my_inject 
+p (5..10).my_inject { |sum, n| sum + n }            #=> 45
+p (5..10).my_inject(1) { |product, n| product * n } #=> 151200
+
+longest = %w{ cat sheep bear }.my_inject do |memo, word|
+  memo.length > word.length ? memo : word
+end
+p longest
+
