@@ -259,7 +259,18 @@ module Enumerable
     end
   end
     
-   
+  def my_map
+    unless block_given?
+      to_enum(__method__)
+    else
+      arr = []
+      for element in self do
+        current = yield element
+        arr.push(current)
+      end
+      arr
+    end
+  end
 end
 
 #1) my_select
@@ -312,7 +323,12 @@ end
 # p [nil, false, true].my_none?                           #=> false
 
 #7) my_count
-ary = [1, 2, 4, 2]
-p ary.my_count               #=> 4
-p ary.my_count(2)            #=> 2
-p ary.my_count{ |x| x%2==0 } #=> 3
+# ary = [1, 2, 4, 2]
+# p ary.my_count               #=> 4
+# p ary.my_count(2)            #=> 2
+# p ary.my_count{ |x| x%2==0 } #=> 3
+
+#8) my_map
+p (1..4).my_map
+p (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
+p (1..4).my_map { "cat"  }   #=> ["cat", "cat", "cat", "cat"]
