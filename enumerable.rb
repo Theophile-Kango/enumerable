@@ -1,3 +1,4 @@
+# rubocop:disable all
 module Enumerable
   def my_each
     unless block_given?
@@ -228,6 +229,37 @@ module Enumerable
     end
     
   end
+
+  def my_count(val=nil)
+
+    unless block_given?
+      
+      if val.class != NilClass
+        i = 0
+        self.my_each do |count|
+          if self[count] == val
+            i += 1
+          end
+        end
+        val
+      else
+        self.my_each do |count|
+          count += 1
+        end
+        count
+      end
+    else
+      j = 0
+      self.my_each do |element|
+        if yield element
+          j += 1
+        end
+      end
+      j
+    end
+  end
+    
+   
 end
 
 #1) my_select
@@ -268,13 +300,19 @@ end
 # p [nil, true, 99].my_any?                              #=> true
 # p [].my_any?                                           #=> false
 
-#my_none?
+#6) my_none?
 
-p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
-p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
-p %w{ant bear cat}.my_none?(/d/)                        #=> true
-p [1, 3.14, 42].my_none?(Float)                         #=> false
-p [].my_none?                                           #=> true
-p [nil].my_none?                                        #=> true
-p [nil, false].my_none?                                 #=> true
-p [nil, false, true].my_none?                           #=> false
+# p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
+# p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
+# p %w{ant bear cat}.my_none?(/d/)                        #=> true
+# p [1, 3.14, 42].my_none?(Float)                         #=> false
+# p [].my_none?                                           #=> true
+# p [nil].my_none?                                        #=> true
+# p [nil, false].my_none?                                 #=> true
+# p [nil, false, true].my_none?                           #=> false
+
+#7) my_count
+ary = [1, 2, 4, 2]
+p ary.my_count               #=> 4
+p ary.my_count(2)            #=> 2
+p ary.my_count{ |x| x%2==0 } #=> 3
