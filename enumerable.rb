@@ -43,108 +43,77 @@ module Enumerable
     end
   end
 
-  def my_all?(word=nil)
-   
+  def my_all?(word = nil)
     unless block_given?
-      
+      i = 0
+      j = 0
+      while i < self.size
+        self[i]
+        i += 1
+      end
       if self.size == 0
         true
       elsif word.class == Regexp
-          i = 0
-          j = 0
-          while i < self.size
-              self[i]
-              i += 1
+
+        for element in self
+          if element.match(word)
+            j += 1
           end
-          for element in self
-            if element.match(word)
-              j += 1
-            end
+        end
+        j == self.length ? true : false
+
+      elsif word == Numeric
+
+        for element in self
+          if element.class <= word
+            j += 1
           end
-          if j == self.length
-            true
-          else
-            false
-          end
-        elsif word == Numeric
-          i = 0
-          j = 0
-          while i < self.size
-              self[i]
-              i += 1
-          end
-          for element in self
-            if element.class <= word
-              j += 1
-            end
-          end
-          
-          if j == self.length
-            true
-          else
-            false
-          end
+        end
+        j == self.length ? true : false
       else
         false
       end
     else
       i = 0
       while i < self.size
-          yield self[i]
-          i += 1
+        yield self[i]
+        i += 1
       end
-      
-     
-      if yield self
-        true
-      else
-        false
-      end
+
+      yield(self) ? true : false
 
     end
   end
 
-  def my_any?(word=nil)
-   
+  def my_any?(word = nil)
     unless block_given?
-      
+      i = 0
+      j = 0
+      while i < self.size
+        self[i]
+        i += 1
+      end
       if self.size == 0
         false
       elsif word.class == Regexp
-          i = 0
-          j = 0
-          while i < self.size
-              self[i]
-              i += 1
+
+        for element in self
+          if element.match(word)
+            j += 1
           end
-          for element in self
-            if element.match(word)
-              j += 1
-            end
+        end
+        j > 0 and j <= self.length ? true : false
+
+      elsif word != nil
+
+        for element in self
+          if element.class <= word
+            j += 1
           end
-          if j > 0 and j <= self.length
-            true
-          else
-            false
-          end
-        elsif word != nil
-          i = 0
-          j = 0
-          while i < self.size
-              self[i]
-              i += 1
-          end
-          for element in self
-            if element.class <= word
-              j += 1
-            end
-          end
-          
-          if j > 0 and j <= self.length
-            true
-          else
-            false
-          end
+        end
+
+        j > 0 and j <= self.length ? true : false
+
       else
         true
       end
@@ -152,57 +121,48 @@ module Enumerable
       i = 0
       j = 0
       while i < self.size
-          yield self[i]
-          i += 1
+        yield self[i]
+        i += 1
       end
-      
+
       for element in self
         if yield element
           j += 1
         end
       end
-      if j > 0 and j <= self.size
-       true
-      else
-        false
-      end
+      j > 0 and j <= self.size ? true : false
     end
   end
 
   def my_none?(word = nil)
     unless block_given?
-      
+      i = 0
+      j = 0
+      while i < self.size
+        self[i]
+        i += 1
+      end
       if self.size == 0
         true
       elsif word.class == Regexp
-          i = 0
-          j = 0
-          while i < self.size
-              self[i]
-              i += 1
+
+        for element in self
+          if element.match(word)
+            j += 1
           end
-          for element in self
-            if element.match(word)
-              j += 1
-            end
+        end
+        j == 0 ? true : false
+
+      elsif word != nil
+
+        for element in self
+          if element.class <= word
+            j += 1
           end
-          j == 0 ? true : false
-            
-        elsif word != nil
-          i = 0
-          j = 0
-          while i < self.size
-              self[i]
-              i += 1
-          end
-          for element in self
-            if element.class <= word
-              j += 1
-            end
-          end
-          
-          j != 0 ? false : true
-        
+        end
+
+        j != 0 ? false : true
+
       else
         j = 0
         self.my_each do |e|
@@ -215,8 +175,8 @@ module Enumerable
     else
       i = 0
       while i < self.size
-          yield self[i]
-          i += 1
+        yield self[i]
+        i += 1
       end
       j = 0
       self.my_each do |element|
@@ -225,15 +185,13 @@ module Enumerable
         end
       end
       j == 0 ? true : false
-        
+
     end
-    
   end
 
-  def my_count(val=nil)
-
+  def my_count(val = nil)
     unless block_given?
-      
+
       if val.class != NilClass
         i = 0
         self.my_each do |count|
@@ -258,7 +216,7 @@ module Enumerable
       j
     end
   end
-    
+
   def my_map
     unless block_given?
       to_enum(__method__)
@@ -278,33 +236,33 @@ module Enumerable
 
     for element in self do
       if element.class == String
-        result = yield(element,element)
+        result = yield(element, element)
       else
         result = yield(element, element.next)
       end
       arr.push(result)
     end
-    
+
     i = 0
     j = 0
     while i < arr.length do
       if arr[i].class == String
         arr2.push(arr[i])
       else
-      if i.even?
-        arr2.push(arr[i])
-      end
+        if i.even?
+          arr2.push(arr[i])
+        end
     end
       i += 1
     end
-  
+
     result = yield(arr2[0], arr2[1])
-    
+
     arr2.my_each do |e|
-      if e.class  == String
+      if e.class == String
         result = yield(result, e)
       end
-        
+
       if j > 1
         result = yield(result, e)
       end
@@ -316,7 +274,7 @@ module Enumerable
     result
   end
 
-  def multiply_els(num=1)
+  def multiply_els(num = 1)
     self.my_inject(num) { |product, n| product * n }
   end
 
@@ -325,36 +283,36 @@ module Enumerable
   end
 end
 
-#1) my_select
+# 1) my_select
 
 # p [1,2,3,4,5].my_select { |num|  num.even?  }   #=> [2, 4]
 
 # array = ["Theo","Gloria","Veronica"]
 
-#2) my_each
+# 2) my_each
 
 # p array.my_each
 
-#3) my_each_with_index
+# 3) my_each_with_index
 
 # hash = Hash.new
 # %w(cat dog wombat).my_each_with_index { |item, index|
 #   hash[item] = index
 # }
-#p hash   #=> {"cat"=>0, "dog"=>1, "wombat"=>2}
-#p array.my_each_with_index
-#p array.each_with_index
+# p hash   #=> {"cat"=>0, "dog"=>1, "wombat"=>2}
+# p array.my_each_with_index
+# p array.each_with_index
 
-#4) my_all?
+# 4) my_all?
 
 # p %w[ant bear cat].my_all? { |word| word.length >= 3 } #=> true
 # p %w[ant bear cat].my_all? { |word| word.length >= 4 } #=> false
 # p [].my_all? #=> true
 # p %w[ant bear cat].my_all?(/t/)                        #=> false
-#p [1, 2i, 3.14].my_all?(Numeric)                       #=> true
+# p [1, 2i, 3.14].my_all?(Numeric)                       #=> true
 # p [nil, true, 99].my_all?                              #=> false
 
-#5) my_any?
+# #5) my_any?
 
 # p %w[ant bear cat].my_any? { |word| word.length >= 3 } #=> true
 # p %w[ant bear cat].my_any? { |word| word.length >= 4 } #=> true
@@ -363,7 +321,7 @@ end
 # p [nil, true, 99].my_any?                              #=> true
 # p [].my_any?                                           #=> false
 
-#6) my_none?
+# 6) my_none?
 
 # p %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
 # p %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
@@ -374,31 +332,31 @@ end
 # p [nil, false].my_none?                                 #=> true
 # p [nil, false, true].my_none?                           #=> false
 
-#7) my_count
+# 7) my_count
 # ary = [1, 2, 4, 2]
 # p ary.my_count               #=> 4
 # p ary.my_count(2)            #=> 2
 # p ary.my_count{ |x| x%2==0 } #=> 3
 
-#8) my_map
+# 8) my_map
 # p (1..4).my_map
 # p (1..4).my_map { |i| i*i }      #=> [1, 4, 9, 16]
 # p (1..4).my_map { "cat"  }   #=> ["cat", "cat", "cat", "cat"]
 
-#9) my_inject
-#p (5..10).my_inject 
-# p (5..10).my_inject { |sum, n| sum + n }            #=> 45
+# 9) my_inject
+
+# p (5..10).my_inject { |sum, n| sum + n } #=> 45
 # p (5..10).my_inject(1) { |product, n| product * n } #=> 151200
 
-# longest = %w{ cat sheep bear }.my_inject do |memo, word|
+# longest = %w{cat sheep bear}.my_inject do |memo, word|
 #   memo.length > word.length ? memo : word
 # end
 # p longest
 
-#10) multiply_els
+# 10) multiply_els
 
 # p (5..10).multiply_els
 
-#11) my_map_proc
+# 11) my_map_proc
 
-p (1..4).my_map_proc{ |i| i*i }  
+ #p (1..4).my_map_proc
