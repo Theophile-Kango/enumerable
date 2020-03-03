@@ -315,6 +315,10 @@ module Enumerable
     end
     result
   end
+
+  def multiply_els(num=1)
+    self.my_inject(num) { |product, n| product * n }
+  end
 end
 
 #1) my_select
@@ -379,11 +383,14 @@ end
 
 #9) my_inject
 #p (5..10).my_inject 
-p (5..10).my_inject { |sum, n| sum + n }            #=> 45
-p (5..10).my_inject(1) { |product, n| product * n } #=> 151200
+# p (5..10).my_inject { |sum, n| sum + n }            #=> 45
+# p (5..10).my_inject(1) { |product, n| product * n } #=> 151200
 
-longest = %w{ cat sheep bear }.my_inject do |memo, word|
-  memo.length > word.length ? memo : word
-end
-p longest
+# longest = %w{ cat sheep bear }.my_inject do |memo, word|
+#   memo.length > word.length ? memo : word
+# end
+# p longest
 
+#10) multiply_els
+
+p (5..10).multiply_els
