@@ -319,6 +319,10 @@ module Enumerable
   def multiply_els(num=1)
     self.my_inject(num) { |product, n| product * n }
   end
+
+  def my_map_proc(&block)
+    my_map
+  end
 end
 
 #1) my_select
@@ -393,4 +397,8 @@ end
 
 #10) multiply_els
 
-p (5..10).multiply_els
+# p (5..10).multiply_els
+
+#11) my_map_proc
+
+p (1..4).my_map_proc{ |i| i*i }  
