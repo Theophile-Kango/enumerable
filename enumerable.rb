@@ -90,10 +90,10 @@ module Enumerable
       else
         for element in self do
           if element == false or element == nil
-            k += 1
+            j += 1
           end
         end
-        k == 0 ? true : false
+        j == 0 ? true : false
       end
     else
       i = 0
@@ -131,7 +131,7 @@ module Enumerable
             j += 1
           end
         end
-        j > 0 and j <= self.length ? true : false
+        j > 0 ? true : false
 
       elsif word != nil
         i = 0
@@ -187,70 +187,8 @@ module Enumerable
     end
   end
 
-  def my_none?(word = nil)
-    unless block_given?
-      i = 0
-      j = 0
-      while i < self.size
-        self[i]
-        i += 1
-      end
-      if self.size == 0
-        true
-      elsif word.class == Regexp
-
-        for element in self
-          if element.match(word)
-            j += 1
-          end
-        end
-        j == 0 ? true : false
-
-      elsif word != nil
-        if word == Numeric
-          for element in self
-            if element.class <= word
-              j += 1
-            end
-          end
-
-          j != 0 ? false : true
-        else
-          i = 0
-          k = 0
-          while i < self.size
-            if self[i].class == word
-              k += 1
-            end
-            i += 1
-          end
-          k == 0 ? true : false
-      end
-
-      else
-        j = 0
-        self.my_each do |e|
-          if e == true
-            j += 1
-          end
-        end
-        j == 0 ? true : false
-      end
-    else
-      i = 0
-      while i < self.size
-        yield self[i]
-        i += 1
-      end
-      j = 0
-      self.my_each do |element|
-        if yield element
-          j += 1
-        end
-      end
-      j == 0 ? true : false
-
-    end
+  def my_none?(arg = nil, &block)
+    !my_any?(arg = nil,&block)
   end
 
   def my_count(val = nil)
@@ -282,9 +220,14 @@ module Enumerable
     end
   end
 
-  def my_map
+  def my_map( proc_argument = nil )
     unless block_given?
-      to_enum(__method__)
+      arr = []
+      for element in self do
+        current = proc_argument.call(element)
+        arr << current
+      end
+      arr
     else
       arr = []
       for element in self do
@@ -320,6 +263,7 @@ module Enumerable
         end
       end
     else
+      acc = param[0]
       result = yield(arr[0], arr[1])
 
       arr.my_each do |e|
@@ -332,9 +276,10 @@ module Enumerable
         end
         i += 1
       end
+      
       if acc.class <= Numeric
-        result = result * acc
-      end
+         result = result * acc
+       end
 
   end
     result
