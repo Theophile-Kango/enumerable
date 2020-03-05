@@ -47,7 +47,7 @@ module Enumerable
     unless block_given?
       i = 0
       j = 0
-      k = 0
+
       while i < self.size
         self[i]
         i += 1
@@ -75,7 +75,7 @@ module Enumerable
         i = 0
         while i < self.size
           if self[i - 1] == self[i]
-            k += 1
+            j += 1
           end
           i += 1
         end
@@ -86,7 +86,6 @@ module Enumerable
           end
         end
         j == self.length ? true : false
-        k == self.length ? true : false
 
       else
         for element in self do
@@ -145,7 +144,7 @@ module Enumerable
         end
 
         for element in self
-          if element == word
+          if element.class == word
             k += 1
           end
         end
@@ -220,7 +219,7 @@ module Enumerable
           i = 0
           k = 0
           while i < self.size
-            if self[i] == word
+            if self[i].class == word
               k += 1
             end
             i += 1
@@ -296,7 +295,7 @@ module Enumerable
     end
   end
 
-  def my_inject(acc = nil)
+  def my_inject(acc = nil, num = nil)
     arr = []
     i = 0
     for element in self do
@@ -317,9 +316,11 @@ module Enumerable
         for el in arr do
           result = result.send(acc, el)
         end
+        if num != nil
+          result = result.send(acc, num)
+        end
       end
     else
-
       result = yield(arr[0], arr[1])
 
       arr.my_each do |e|
@@ -335,6 +336,7 @@ module Enumerable
       if acc.class <= Numeric
         result = result * acc
       end
+
   end
     result
   end
