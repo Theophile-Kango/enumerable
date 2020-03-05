@@ -295,7 +295,8 @@ module Enumerable
     end
   end
 
-  def my_inject(acc = nil, num = nil)
+  def my_inject(*param)
+    
     arr = []
     i = 0
     for element in self do
@@ -304,20 +305,18 @@ module Enumerable
 
     unless block_given?
 
-      if acc.class == Symbol
-        case acc
-        when :+
-          result = 0
-        when :-
-          result = 0
-        else
-          result = 1
-        end
-        for el in arr do
+      if param.length == 1
+        acc = param[0]
+        result = arr[0]
+        arr[1..-1].my_each do |el|
           result = result.send(acc, el)
         end
-        if num != nil
-          result = result.send(acc, num)
+      end
+      if param.length == 2
+        result = param[0]
+        acc = param[1]
+        arr.my_each do |el|
+          result = result.send(acc, el)
         end
       end
     else
