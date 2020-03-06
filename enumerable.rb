@@ -86,6 +86,12 @@ module Enumerable
             k += 1
           end
         end
+
+        for element in self
+          if element == word
+            k += 1
+          end
+        end
         
         k == self.length ? true : false
       
@@ -217,18 +223,25 @@ module Enumerable
               j += 1
             end
           end
-
-          j != 0 ? false : true
+          
+          
+          j > 0 ? false : true
         else
           i = 0
           k = 0
+          for element in self
+            if element == word
+              k += 1
+            end
+          end
           while i < self.size
             if self[i].class == word
               k += 1
             end
             i += 1
           end
-          k == 0 ? true : false
+          k > 0 ? true : false
+          
       end
 
       else
