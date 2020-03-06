@@ -1,4 +1,5 @@
 # rubocop:disable all
+# rubocop:disable all
 module Enumerable
   def my_each
     unless block_given?
@@ -47,7 +48,7 @@ module Enumerable
     unless block_given?
       i = 0
       j = 0
-
+      
       while i < self.size
         self[i]
         i += 1
@@ -57,7 +58,7 @@ module Enumerable
       elsif word.class == Regexp
 
         for element in self
-          if element.match(word)
+          if element =~ word
             j += 1
           end
         end
@@ -79,14 +80,15 @@ module Enumerable
           end
           i += 1
         end
-
+        k = 0
         for element in self
           if element.class == word
-            j += 1
+            k += 1
           end
         end
-        j == self.length ? true : false
-
+        
+        k == self.length ? true : false
+      
       else
         for element in self do
           if element == false or element == nil
@@ -127,11 +129,11 @@ module Enumerable
       elsif word.class == Regexp
 
         for element in self
-          if element.match(word)
+          if element =~ word
             j += 1
           end
         end
-        j > 0 ? true : false
+        j > 0 and j <= self.length ? true : false
 
       elsif word != nil
         i = 0
@@ -187,8 +189,71 @@ module Enumerable
     end
   end
 
-  def my_none?(arg = nil, &block)
-    !my_any?(arg = nil,&block)
+  def my_none?(word = nil)
+    unless block_given?
+      i = 0
+      j = 0
+      while i < self.size
+        self[i]
+        i += 1
+      end
+      if self.size == 0
+        true
+      elsif word.class == Regexp
+
+        self.my_each do |element|
+          if element =~ word
+            j += 1
+          end
+        end
+       
+        j == 0 ? true : false
+
+      elsif word != nil
+        if word == Numeric
+          for element in self
+            if element.class <= word
+              j += 1
+            end
+          end
+
+          j != 0 ? false : true
+        else
+          i = 0
+          k = 0
+          while i < self.size
+            if self[i].class == word
+              k += 1
+            end
+            i += 1
+          end
+          k == 0 ? true : false
+      end
+
+      else
+        j = 0
+        self.my_each do |e|
+          if e == true
+            j += 1
+          end
+        end
+        j == 0 ? true : false
+      end
+    else
+      i = 0
+      while i < self.size
+        yield self[i]
+        i += 1
+      end
+      j = 0
+      self.my_each do |element|
+        if yield element
+          j += 1
+        end
+      end
+      j == 0 ? true : false
+
+    end
   end
 
   def my_count(val = nil)
@@ -220,14 +285,18 @@ module Enumerable
     end
   end
 
-  def my_map( proc_argument = nil )
+  def my_map(proc_argument = nil)
     unless block_given?
-      arr = []
+      if proc_argument != nil
+       arr = []
       for element in self do
         current = proc_argument.call(element)
         arr << current
       end
       arr
+    else
+      to_enum(__method__)
+    end
     else
       arr = []
       for element in self do
@@ -238,7 +307,7 @@ module Enumerable
     end
   end
 
-  def my_inject(*param)
+   def my_inject(*param)
     
     arr = []
     i = 0
