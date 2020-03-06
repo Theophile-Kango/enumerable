@@ -1,5 +1,5 @@
 # rubocop:disable all
-# rubocop:disable all
+
 module Enumerable
   def my_each
     unless block_given?
@@ -139,11 +139,12 @@ module Enumerable
         i = 0
         k = 0
         while i < self.size
-          if self[i - 1] == self[i]
+          if word == self[i]
             k += 1
           end
           i += 1
         end
+  
 
         for element in self
           if element.class == word
@@ -158,7 +159,7 @@ module Enumerable
             j += 1
           end
         end
-
+        
         j > 0 and j <= self.length ? true : false
 
       else
@@ -358,7 +359,4 @@ module Enumerable
     self.my_inject(num) { |product, n| product * n }
   end
 
-  def my_map_proc(&block)
-    my_map
-  end
 end
