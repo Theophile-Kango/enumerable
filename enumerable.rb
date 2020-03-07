@@ -240,7 +240,7 @@ module Enumerable
             end
             i += 1
           end
-          k > 0 ? true : false
+          k == 0 ? true : false
           
       end
 
